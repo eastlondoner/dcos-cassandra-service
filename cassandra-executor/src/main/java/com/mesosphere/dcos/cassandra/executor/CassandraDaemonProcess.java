@@ -22,6 +22,7 @@ import com.mesosphere.dcos.cassandra.common.tasks.CassandraMode;
 import com.mesosphere.dcos.cassandra.common.tasks.CassandraStatus;
 import com.mesosphere.dcos.cassandra.executor.metrics.MetricsConfig;
 import org.apache.cassandra.tools.NodeProbe;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
 import org.slf4j.Logger;
@@ -271,14 +272,10 @@ public class CassandraDaemonProcess {
     private Process createDaemon() throws IOException {
 
         final ProcessBuilder builder = new ProcessBuilder(
-            paths.cassandraRun()
-                .toString(),
+            paths.cassandraRun().toString(),
             getReplaceIp(),
-            "-f"
-        )
-            .directory(new File(System.getProperty("user.dir")))
-            .redirectOutput(new File("cassandra-stdout.log"))
-            .redirectError(new File("cassandra-stderr.log"));
+            "-f")
+            .directory(new File(System.getProperty("user.dir")));
 
         builder.environment().putAll(task.getConfig().getHeap().toEnv());
         builder.environment().put(
